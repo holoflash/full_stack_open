@@ -18,7 +18,6 @@ const deleteNameFromServer = (id) => {
 
 const update = (id, newObject) => {
     const request = axios.put(`${baseUrl}/${id}`, newObject)
-    console.log(id, newObject)
     return request.then(response => response.data)
 }
 

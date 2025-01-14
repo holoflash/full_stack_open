@@ -1,6 +1,18 @@
 import { useState, useEffect } from 'react'
 import nameService from './services/names'
 
+const Notification = ({ message }) => {
+  if (message.text === null) {
+    return null
+  }
+
+  return (
+    <div className={message.type}>
+      {message.text}
+    </div>
+  )
+}
+
 const Persons = ({ filteredPersons, deleteName }) => {
   return (
     <div>
@@ -38,6 +50,20 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('');
   const [filterBy, setFilterBy] = useState('');
+  const [message, setMessage] = useState({
+    text: null,
+    color: 'green'
+  })
+
+  useEffect(() => {
+    if (message.text) {
+      const timer = setTimeout(() => {
+        setMessage(prev => ({ ...prev, text: null }));
+      }, 2000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [message.text]);
 
   useEffect(() => {
     nameService
@@ -72,6 +98,7 @@ const App = () => {
         setPersons(persons.concat(returnedName))
         setNewName('')
         setNewNumber('')
+        setMessage(prev => ({ ...prev, text: `Added ${returnedName.name}`, type: 'good' }))
       })
   }
 
@@ -79,9 +106,10 @@ const App = () => {
     if (confirm(`Delete ${name} ?`)) {
       nameService
         .deleteNameFromServer(id)
-        .then(personToDelete =>
+        .then(personToDelete => {
           setPersons(persons.filter(person => personToDelete.id !== person.id))
-        )
+          setMessage(prev => ({ ...prev, text: `Deleted ${personToDelete.name}`, type: 'error' }))
+        })
     }
   }
 
@@ -90,6 +118,14 @@ const App = () => {
       .update(id, newObject)
       .then(updatedPerson => {
         setPersons(persons.map(person => (person.id == id ? updatedPerson : person)))
+        setMessage(prev => ({ ...prev, text: `Updated ${updatedPerson.name}`, type: 'good' }))
+      })
+      .catch(error => {
+        setMessage(prev => ({
+          ...prev,
+          text: `Information of ${newObject.name} has already been removed from server`,
+          type: 'error'
+        }))
       })
   }
 
@@ -102,14 +138,15 @@ const App = () => {
   }
 
   const handleFilter = (event) => {
-    setFilterBy(event.target.value.toLowerCase())
+    setFilterBy(event.target.value)
   }
 
-  const filteredPersons = persons.filter(person => person.name.toLowerCase().startsWith(filterBy))
+  const filteredPersons = persons.filter(person => person.name.toLowerCase().startsWith(filterBy.toLowerCase()))
 
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={message} />
       <Filter {...{ filterBy, handleFilter }} />
       <h3>Add New</h3>
       <Form {...{ addName, newName, handleNameChange, newNumber, handleNumberChange }} />
