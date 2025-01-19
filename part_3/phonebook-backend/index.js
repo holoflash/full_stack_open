@@ -16,7 +16,11 @@ app.use(morgan(':method :url :status :res[content-length] :body - :response-time
 
 app.get('/api/info', (request, response) => {
     const date = new Date().toUTCString();
-    response.send(`<div>Phonebook has info for ${persons.length} people</div><br/><div>${date}</div>`)
+    Person.find({})
+        .then(person => {
+            response.send(`<div>Phonebook has info for ${person.length} people</div><br/><div>${date}</div>`)
+        })
+        .catch(error => next(error))
 })
 
 app.get('/api/persons', (request, response, next) => {
@@ -43,6 +47,9 @@ app.get('/api/persons/:id', (request, response, next) => {
 app.delete('/api/persons/:id', (request, response, next) => {
     Person.findByIdAndDelete(request.params.id)
         .then(removedPerson => {
+            if (!removedPerson) {
+                return response.status(404).json({ error: 'Person not found' })
+            }
             response.json(removedPerson);
         })
         .catch(error => next(error))
@@ -65,17 +72,21 @@ app.post('/api/persons', (request, response) => {
 })
 
 app.put('/api/persons/:id', (request, response, next) => {
-    const { name, number } = request.body
+    const { name, number } = request.body;
 
     Person.findByIdAndUpdate(
         request.params.id,
         { name, number },
-        { new: true, runValidators: true, context: 'query' })
+        { new: true, runValidators: true, context: 'query' }
+    )
         .then((updatedPerson) => {
-            response.json(updatedPerson)
+            if (!updatedPerson) {
+                return response.status(404).json({ error: 'Person not found' });
+            }
+            response.json(updatedPerson);
         })
-        .catch((error) => next(error))
-})
+        .catch((error) => next(error));
+});
 
 const unknownEndpoint = (request, response) => {
     response.status(404).send({ error: 'unknown endpoint' })

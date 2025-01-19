@@ -1,50 +1,9 @@
 import { useState, useEffect } from 'react'
-import nameService from './services/names'
-
-const Notification = ({ message }) => {
-  if (message.text === null) {
-    return null
-  }
-
-  return (
-    <div className={message.type}>
-      {message.text}
-    </div>
-  )
-}
-
-const Persons = ({ filteredPersons, deleteName }) => {
-  return (
-    <div>
-      {filteredPersons.map(person => (
-        <div key={person.id}>
-          <div>Name: {person.name}</div>
-          <div>Number: {person.number} </div>
-          <div>ID: {person.id} </div>
-          <button onClick={() => deleteName(person.id, person.name)}>Delete</button>
-        </div>
-      ))}
-    </div>
-  )
-};
-
-const Form = ({ addName, newName, handleNameChange, newNumber, handleNumberChange }) => {
-  return (
-    <form onSubmit={addName}>
-      <div>Name: <input value={newName} onChange={handleNameChange} required /></div>
-      <div>Number: <input value={newNumber} onChange={handleNumberChange} required /></div>
-      <div>
-        <button type="submit">add</button>
-      </div>
-    </form>
-  )
-};
-
-const Filter = ({ filterBy, handleFilter }) => {
-  return (
-    <div>Filter: <input value={filterBy} onChange={handleFilter} /></div>
-  )
-};
+import personService from './services/persons'
+import Notification from './components/Notification'
+import Persons from './components/Persons'
+import Form from './components/Form'
+import Filter from './components/Filter'
 
 const App = () => {
   const [persons, setPersons] = useState([])
@@ -53,7 +12,7 @@ const App = () => {
   const [filterBy, setFilterBy] = useState('');
   const [message, setMessage] = useState({
     text: null,
-    color: 'green'
+    type: 'good'
   })
 
   useEffect(() => {
@@ -67,12 +26,15 @@ const App = () => {
   }, [message.text]);
 
   useEffect(() => {
-    nameService
+    personService
       .getAll()
       .then(initialNames => {
         setPersons(initialNames)
       })
-  }, [])
+      .catch((error) => {
+        setMessage(prev => ({ ...prev, text: `${error}`, type: 'error' }))
+      })
+  }, [message])
 
   const addName = (event) => {
     event.preventDefault()
@@ -93,7 +55,7 @@ const App = () => {
       number: newNumber,
     }
 
-    nameService
+    personService
       .create(newPerson)
       .then(returnedName => {
         setPersons(persons.concat(returnedName))
@@ -101,15 +63,18 @@ const App = () => {
         setNewNumber('')
         setMessage(prev => ({ ...prev, text: `Added ${returnedName.name}`, type: 'good' }))
       })
+      .catch((error) => {
+        setMessage(prev => ({ ...prev, text: `${error}`, type: 'error' }))
+      })
   }
 
   const deleteName = (id, name) => {
     if (confirm(`Delete ${name} ?`)) {
-      nameService
+      personService
         .deleteNameFromServer(id)
-        .then(personToDelete => {
-          setPersons(persons.filter(person => personToDelete.id !== person.id))
-          setMessage(prev => ({ ...prev, text: `Deleted ${personToDelete.name}`, type: 'error' }))
+        .then(() => {
+          setPersons(persons.filter(person => person.id !== id))
+          setMessage(prev => ({ ...prev, text: `Deleted ${name}`, type: 'error' }))
         })
         .catch(error => {
           setMessage(prev => ({
@@ -122,7 +87,7 @@ const App = () => {
   }
 
   const updateNumber = (id, newObject) => {
-    nameService
+    personService
       .update(id, newObject)
       .then(updatedPerson => {
         setPersons(persons.map(person => (person.id == id ? updatedPerson : person)))
