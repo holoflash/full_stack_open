@@ -20,6 +20,7 @@ const Persons = ({ filteredPersons, deleteName }) => {
         <div key={person.id}>
           <div>Name: {person.name}</div>
           <div>Number: {person.number} </div>
+          <div>ID: {person.id} </div>
           <button onClick={() => deleteName(person.id, person.name)}>Delete</button>
         </div>
       ))}
@@ -110,6 +111,13 @@ const App = () => {
           setPersons(persons.filter(person => personToDelete.id !== person.id))
           setMessage(prev => ({ ...prev, text: `Deleted ${personToDelete.name}`, type: 'error' }))
         })
+        .catch(error => {
+          setMessage(prev => ({
+            ...prev,
+            text: `Information of ${name} has already been removed from server`,
+            type: 'error'
+          }))
+        })
     }
   }
 
@@ -118,7 +126,7 @@ const App = () => {
       .update(id, newObject)
       .then(updatedPerson => {
         setPersons(persons.map(person => (person.id == id ? updatedPerson : person)))
-        setMessage(prev => ({ ...prev, text: `Updated ${updatedPerson.name}`, type: 'good' }))
+        setMessage(prev => ({ ...prev, text: `Updated ${newObject.name}`, type: 'good' }))
       })
       .catch(error => {
         setMessage(prev => ({
@@ -141,7 +149,7 @@ const App = () => {
     setFilterBy(event.target.value)
   }
 
-  const filteredPersons = persons.filter(person => person.name.toLowerCase().startsWith(filterBy.toLowerCase()))
+  const filteredPersons = persons.filter(person => person?.name.toLowerCase().startsWith(filterBy.toLowerCase()))
 
   return (
     <div>
