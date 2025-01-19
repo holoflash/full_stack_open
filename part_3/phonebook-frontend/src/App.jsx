@@ -63,8 +63,8 @@ const App = () => {
         setNewNumber('')
         setMessage(prev => ({ ...prev, text: `Added ${returnedName.name}`, type: 'good' }))
       })
-      .catch((error) => {
-        setMessage(prev => ({ ...prev, text: `${error}`, type: 'error' }))
+      .catch(error => {
+        setMessage(prev => ({ ...prev, text: `${error.response.data.error}`, type: 'error' }))
       })
   }
 
