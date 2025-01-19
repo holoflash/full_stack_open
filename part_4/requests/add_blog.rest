@@ -1,0 +1,9 @@
+POST http://localhost:3003/api/blogs
+content-type: application/json
+
+{
+  "title": "Newester Blog",
+    "author": "John Bishop",
+    "url": "www.google.com",
+    "likes": 12
+}
