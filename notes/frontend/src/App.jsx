@@ -1,14 +1,14 @@
 import { useState, useEffect } from 'react'
 import Note from './components/Note'
 import Notification from './components/Notification'
-import noteService from './services/notes'
 import Footer from './components/Footer'
+import noteService from './services/notes'
 
 const App = () => {
   const [notes, setNotes] = useState([])
   const [newNote, setNewNote] = useState('')
   const [showAll, setShowAll] = useState(true)
-  const [message, setMessage] = useState(null)
+  const [errorMessage, setErrorMessage] = useState(null)
 
   useEffect(() => {
     noteService
@@ -24,10 +24,10 @@ const App = () => {
       content: newNote,
       important: Math.random() > 0.5,
     }
-
+  
     noteService
       .create(noteObject)
-      .then(returnedNote => {
+        .then(returnedNote => {
         setNotes(notes.concat(returnedNote))
         setNewNote('')
       })
@@ -36,10 +36,10 @@ const App = () => {
   const toggleImportanceOf = id => {
     const note = notes.find(n => n.id === id)
     const changedNote = { ...note, important: !note.important }
-
+  
     noteService
       .update(id, changedNote)
-      .then(returnedNote => {
+        .then(returnedNote => {
         setNotes(notes.map(note => note.id !== id ? note : returnedNote))
       })
       .catch(error => {
@@ -66,11 +66,11 @@ const App = () => {
       <Notification message={errorMessage} />
       <div>
         <button onClick={() => setShowAll(!showAll)}>
-          show {showAll ? 'important' : 'all'}
+          show {showAll ? 'important' : 'all' }
         </button>
-      </div>
+      </div>      
       <ul>
-        {notesToShow.map(note =>
+        {notesToShow.map(note => 
           <Note
             key={note.id}
             note={note}
@@ -79,7 +79,7 @@ const App = () => {
         )}
       </ul>
       <form onSubmit={addNote}>
-        <input
+      <input
           value={newNote}
           onChange={handleNoteChange}
         />
