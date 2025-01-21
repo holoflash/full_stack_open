@@ -5,6 +5,7 @@ const supertest = require('supertest')
 const app = require('../app')
 const Blog = require('../models/blog')
 const initialBlogs = require('./testHelpers')
+const logger = require('../utils/logger')
 
 const api = supertest(app)
 
@@ -43,7 +44,7 @@ test('all blog posts have a unique identifier property named id', async () => {
     assert.strictEqual(ids.length, uniqueIds.size);
 });
 
-test.only('a valid blog can be added ', async () => {
+test('a valid blog can be added', async () => {
     const newBlog = {
         title: "New blog added",
     }
@@ -60,6 +61,22 @@ test.only('a valid blog can be added ', async () => {
 
     const title = blogsAtEnd.map(n => n.title)
     assert(title.includes('New blog added'))
+})
+
+test.only('a blog without likes property defaults to 0 likes', async () => {
+    const newBlog = {
+        title: "New blog added",
+    }
+
+    await api
+        .post('/api/blogs')
+        .send(newBlog)
+        .expect(201)
+        .expect('Content-Type', /application\/json/)
+
+    const blogsAtEnd = await blogsInDb()
+    const lastBlogLikes = blogsAtEnd[blogsAtEnd.length - 1].likes
+    assert.strictEqual(lastBlogLikes, 0)
 })
 
 after(async () => {
