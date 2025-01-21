@@ -2,8 +2,9 @@ POST http://localhost:3003/api/blogs
 content-type: application/json
 
 {
-  "title": "Newester Blog",
-    "author": "John Bishop",
+  "title": "It's over nine thousand!",
+    "author": "Steven",
     "url": "www.google.com",
-    "likes": 12
+    "likes": 9001,
+    "userId": "678f9eaa07b87954852b073a"
 }
