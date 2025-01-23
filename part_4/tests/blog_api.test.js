@@ -5,31 +5,18 @@ const supertest = require('supertest')
 const app = require('../app')
 const Blog = require('../models/blog')
 const User = require('../models/user')
-const bcrypt = require('bcrypt')
 const helper = require('./testHelpers')
 
 const api = supertest(app)
+
 describe('api', () => {
+    let headers;
     beforeEach(async () => {
         await Blog.deleteMany({});
-        await User.deleteMany({});
-
-        const passwordHash = await bcrypt.hash('password123', 10);
-        const testUser = new User({
-            username: 'testuser',
-            name: 'Test User',
-            passwordHash,
-        });
-        await testUser.save();
-
-        if (helper.initialBlogs) {
-            const user = await User.findOne({ username: 'testuser' });
-            const blogs = helper.initialBlogs.map(blog => ({
-                ...blog,
-                user: user._id,
-            }));
-            await Blog.insertMany(blogs);
-        }
+        await Blog.insertMany(helper.initialBlogs)
+        await User.deleteMany({})
+        await User.insertMany(helper.initialUsers)
+        headers = { Authorization: await helper.userLogin(), }
     });
 
     test('blogs are returned as json', async () => {
@@ -54,38 +41,35 @@ describe('api', () => {
     });
 
     test('a valid blog can be added', async () => {
-        const user = await User.findOne({ username: 'testuser' });
-
         const newBlog = {
             title: 'Test Blog',
             author: 'Test Author',
             url: 'http://testblog.com',
             likes: 10,
-            userId: user._id.toString(),
         };
 
         await api
             .post('/api/blogs')
+            .set(headers)
             .send(newBlog)
             .expect(201)
             .expect('Content-Type', /application\/json/);
 
         const blogsAtEnd = await Blog.find({});
+
         assert.equal(blogsAtEnd.length, helper.initialBlogs.length + 1);
     });
 
     test('a blog without likes property defaults to 0 likes', async () => {
-        const user = await User.findOne({ username: 'testuser' });
-
         const newBlog = {
             title: 'Test Blog',
             author: 'Test Author',
             url: 'http://testblog.com',
-            userId: user._id.toString(),
         };
 
         await api
             .post('/api/blogs')
+            .set(headers)
             .send(newBlog)
             .expect(201)
             .expect('Content-Type', /application\/json/)
@@ -96,15 +80,14 @@ describe('api', () => {
     })
 
     test('Blog without title and url is not added', async () => {
-        const user = await User.findOne({ username: 'testuser' });
-
         const newBlog = {
             author: 'Test Author',
-            userId: user._id.toString(),
+            likes: 10,
         };
 
         await api
             .post('/api/blogs')
+            .set(headers)
             .send(newBlog)
             .expect(400)
 
@@ -113,16 +96,23 @@ describe('api', () => {
     })
 
     test('Deleting blog succeeds with status code 204 if id is valid', async () => {
-        const blogsAtStart = await helper.blogsInDb()
-        const blogToDelete = blogsAtStart[0]
+        const newBlog = {
+            title: 'Test Blog',
+            author: 'Test Author',
+            url: 'http://testblog.com',
+            likes: 10,
+        };
 
-        await api
-            .delete(`/api/blogs/${blogToDelete._id}`)
-            .expect(204)
+        const savedBlog = await api
+            .post('/api/blogs')
+            .set(headers)
+            .send(newBlog)
+            .expect(201)
+
+        await api.delete(`/api/blogs/${savedBlog.body._id}`).set(headers).expect(204)
 
         const blogsAtEnd = await helper.blogsInDb()
-
-        assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length - 1)
+        assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length)
     })
 
     test('Updating blog succeeds with status code 200 if id is valid', async () => {
@@ -169,7 +159,7 @@ describe('api', () => {
         const usersAtStart = await helper.usersInDb()
 
         const newUser = {
-            username: "testuser",
+            username: "Bob",
             name: "Bob",
             password: "password123",
         }
@@ -190,7 +180,7 @@ describe('api', () => {
         const usersAtStart = await helper.usersInDb()
 
         const newUser = {
-            username: "12",
+            username: "bobbers",
             name: "Bob",
             password: "12",
         }

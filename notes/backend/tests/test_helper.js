@@ -34,5 +34,5 @@ module.exports = {
     initialNotes,
     nonExistingId,
     notesInDb,
-    usersInDb,
+    usersInDb
 }
