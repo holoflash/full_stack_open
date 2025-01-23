@@ -1,10 +1,10 @@
 POST http://localhost:3003/api/blogs
-content-type: application/json
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImpvaG4iLCJpZCI6IjY3OTIwZjg3ZWE0NDM2MmU0ZWM1ZTJmZiIsImlhdCI6MTczNzYyNTQ5OSwiZXhwIjoxNzM3NjI5MDk5fQ.qkXql7KRED9zwxtJ2mQFc4815kZeB4fhQpTSQaN3qyg
 
 {
   "title": "It's over nine thousand!",
-    "author": "Steven",
-    "url": "www.google.com",
-    "likes": 9001,
-    "userId": "678f9eaa07b87954852b073a"
+  "author": "john",
+  "url": "www.google.com",
+  "likes": 9001
 }
