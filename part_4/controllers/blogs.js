@@ -17,16 +17,19 @@ blogRouter.post('/', middleware.userExtractor, async (request, response) => {
         title: body.title,
         author: body.author,
         url: body.url,
-        likes: body.likes,
+        likes: body.likes || 0,
         user: user._id
     })
 
     const savedBlog = await blog.save();
+
     user.blogs = user.blogs.concat(savedBlog._id)
     await user.save()
 
-    response.status(201).json(savedBlog);
-});
+    const populatedBlog = await Blog.findById(savedBlog._id).populate('user', { username: 1, name: 1 })
+
+    response.status(201).json(populatedBlog)
+})
 
 blogRouter.delete('/:id', middleware.userExtractor, async (request, response) => {
     const user = request.user
@@ -48,9 +51,18 @@ blogRouter.delete('/:id', middleware.userExtractor, async (request, response) =>
 blogRouter.put('/:id', async (request, response) => {
     const body = request.body
 
+    const updatedBlog = await Blog.findByIdAndUpdate(
+        request.params.id,
+        { likes: body.likes },
+        { new: true }
+    ).populate('user', { username: 1, name: 1 })
 
-    const updatedBlog = await Blog.findByIdAndUpdate(request.params.id, { likes: body.likes }, { new: true })
+    if (!updatedBlog) {
+        return response.status(404).json({ error: 'Blog not found' })
+    }
+
     response.json(updatedBlog)
 })
+
 
 module.exports = blogRouter
