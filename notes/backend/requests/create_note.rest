@@ -1,6 +1,6 @@
 POST http://localhost:3001/api/notes
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlBldGVyIiwiaWQiOiI2NzhmOGNkMTI4MDBkYjQ1Y2QyNzkwY2MiLCJpYXQiOjE3Mzc0NjI5MTd9.ZtDKKv_G-o753i1GvRj0ZeK4GpK72-NorRVefEQ8kFM
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImRpbGwiLCJpZCI6IjY3OTVkMjkwMTlkNGU1YzI0OTIwYmI4YiIsImlhdCI6MTczNzg3MjQ5NSwiZXhwIjoxNzM3ODc2MDk1fQ.HlELXTRgLqdWHPdo_gZTj532EExyywd_35ruPId8s0U
 
 {
   "content": "Token auth rocks!",
