@@ -24,13 +24,13 @@ const NewBlog = ({ createBlog, username }) => {
       <h3>Add a new blog</h3>
       <form onSubmit={addBlog}>
         <div>
-          Title: <input name="title" value={newBlog.title} onChange={handleNewBlog} required />
+          Title: <input data-testid='title' name="title" value={newBlog.title} onChange={handleNewBlog} required />
         </div>
         <div>
-          URL: <input name="url" value={newBlog.url} onChange={handleNewBlog} required />
+          URL: <input data-testid='url' name="url" value={newBlog.url} onChange={handleNewBlog} required />
         </div>
         <div>
-          <button type="submit">add</button>
+          <button data-testid='add' type="submit">add</button>
         </div>
       </form>
     </div>

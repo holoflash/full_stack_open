@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import PropTypes from 'prop-types'
+/* eslint-disable react/prop-types */
 
 const Blog = ({ user, blog, addLike, deleteBlog }) => {
   const [inView, setInView] = useState(false)
@@ -21,9 +21,9 @@ const Blog = ({ user, blog, addLike, deleteBlog }) => {
       <button onClick={toggleView}>{inView ? 'Less' : 'More'}</button>
       {inView && (
         <div>
-          <p>URL: {blog.url}</p>
+          <p data-testid='url'>URL: {blog.url}</p>
           <p>
-            Likes: {blog.likes}{' '}
+            <div data-testid='likes'>Likes: {blog.likes}{' '}</div>
             <button onClick={() => addLike(blog)}>Like</button>
           </p>
           <p>Username: {blog.user.username}</p>
@@ -34,24 +34,6 @@ const Blog = ({ user, blog, addLike, deleteBlog }) => {
       )}
     </div>
   )
-}
-
-
-Blog.propTypes = {
-  user: PropTypes.shape({
-    username: PropTypes.string.isRequired,
-  }).isRequired,
-  blog: PropTypes.shape({
-    title: PropTypes.string.isRequired,
-    author: PropTypes.string.isRequired,
-    url: PropTypes.string.isRequired,
-    likes: PropTypes.number.isRequired,
-    user: PropTypes.shape({
-      username: PropTypes.string.isRequired,
-    }).isRequired,
-  }).isRequired,
-  addLike: PropTypes.func.isRequired,
-  deleteBlog: PropTypes.func.isRequired,
 }
 
 export default Blog
