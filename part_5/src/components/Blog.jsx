@@ -16,7 +16,7 @@ const Blog = ({ user, blog, addLike, deleteBlog }) => {
   }
 
   return (
-    <div style={blogStyle}>
+    <div id='blog' data-testid={blog.likes} style={blogStyle}>
       {blog.title} {blog.author}
       <button onClick={toggleView}>{inView ? 'Less' : 'More'}</button>
       {inView && (
