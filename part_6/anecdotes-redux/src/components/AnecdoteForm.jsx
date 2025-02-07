@@ -1,5 +1,6 @@
 import { add } from '../reducers/anecdoteReducer';
 import { useDispatch } from 'react-redux';
+import { showAddMessage } from '../reducers/messageReducer';
 
 const AnecdoteForm = () => {
     const dispatch = useDispatch();
@@ -9,6 +10,7 @@ const AnecdoteForm = () => {
         event.target.anecdote.value = '';
 
         dispatch(add(content));
+        dispatch(showAddMessage(content))
     };
     return (
         <>
