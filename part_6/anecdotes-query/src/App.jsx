@@ -3,10 +3,12 @@ import Notification from './components/Notification'
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { getAnecdotes, updateAnecdote } from './requests'
+import { useNotificationDispatch } from './NotificiationContext'
 
 
 const App = () => {
   const queryClient = useQueryClient()
+  const notificationDispatch = useNotificationDispatch()
 
   const updateAnecdoteMutation = useMutation({
     mutationFn: updateAnecdote,
@@ -16,6 +18,15 @@ const App = () => {
         anecdote.id === updatedAnecdote.id ? updatedAnecdote : anecdote
       )
       queryClient.setQueryData(['anecdotes'], updatedAnecdotes)
+      notificationDispatch({
+        type: 'SET_MESSAGE',
+        payload: `Liked '${updatedAnecdote.content}'`
+      })
+    }, onError: (error) => {
+      notificationDispatch({
+        type: 'SET_MESSAGE',
+        payload: error.response.data.error,
+      })
     },
   })
 
@@ -41,10 +52,8 @@ const App = () => {
   return (
     <div>
       <h3>Anecdote app</h3>
-
       <Notification />
       <AnecdoteForm />
-
       {anecdotes.map(anecdote =>
         <div key={anecdote.id}>
           <div>
