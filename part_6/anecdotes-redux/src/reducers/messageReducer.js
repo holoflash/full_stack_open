@@ -6,11 +6,8 @@ const messageSlice = createSlice({
     name: 'message',
     initialState,
     reducers: {
-        showLikeMessage(state, action) {
-            return `You upvoted '${action.payload}'`
-        },
-        showAddMessage(state, action) {
-            return `'${action.payload}' added`
+        showMessage(state, action) {
+            return action.payload
         },
         clearMessage() {
             return initialState
@@ -18,5 +15,15 @@ const messageSlice = createSlice({
     }
 })
 
-export const { showLikeMessage, showAddMessage, clearMessage } = messageSlice.actions
+export const { showMessage, clearMessage } = messageSlice.actions
+
+export const messenger = (message, time) => {
+    return dispatch => {
+        dispatch(showMessage(message))
+        setTimeout(() => {
+            dispatch(clearMessage())
+        }, (time * 1000));
+    }
+}
+
 export default messageSlice.reducer

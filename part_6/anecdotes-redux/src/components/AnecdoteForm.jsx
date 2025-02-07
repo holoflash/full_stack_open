@@ -1,7 +1,6 @@
-import { add } from '../reducers/anecdoteReducer';
+import { addAnecdoteToDb } from '../reducers/anecdoteReducer';
 import { useDispatch } from 'react-redux';
-import { showAddMessage } from '../reducers/messageReducer';
-import anecdoteService from '../services/anecdotes';
+import { messenger } from '../reducers/messageReducer';
 
 const AnecdoteForm = () => {
     const dispatch = useDispatch();
@@ -9,10 +8,8 @@ const AnecdoteForm = () => {
         event.preventDefault();
         const content = event.target.anecdote.value;
         event.target.anecdote.value = '';
-
-        const newAnecdote = await anecdoteService.createNew(content)
-        dispatch(add(newAnecdote))
-        dispatch(showAddMessage(content))
+        dispatch(addAnecdoteToDb(content))
+        dispatch(messenger(`${content} added`, 5))
     };
     return (
         <>

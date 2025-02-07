@@ -1,6 +1,6 @@
 import { useSelector, useDispatch } from 'react-redux';
-import { vote } from '../reducers/anecdoteReducer';
-import { showLikeMessage } from '../reducers/messageReducer';
+import { upvoteAnecdote } from '../reducers/anecdoteReducer';
+import { messenger } from '../reducers/messageReducer';
 
 const AnecdoteList = () => {
     const anecdotes = useSelector((state) => state.anecdotes);
@@ -17,8 +17,8 @@ const AnecdoteList = () => {
     const dispatch = useDispatch();
 
     const upvote = (id, content) => {
-        dispatch(vote(id))
-        dispatch(showLikeMessage(content))
+        dispatch(upvoteAnecdote(id))
+        dispatch(messenger(`Upvoted ${content}`, 2))
     }
 
     return (
