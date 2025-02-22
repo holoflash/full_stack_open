@@ -1,0 +1,137 @@
+* {
+    font-family: 'Courier New', Courier, monospace;
+}
+
+.error {
+    color: red;
+    background: lightgrey;
+    font-size: 20px;
+    border-style: solid;
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+.good {
+    color: green;
+    background: lightgrey;
+    font-size: 20px;
+    border-style: solid;
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+button {
+    all: unset;
+    background-color: rgb(244, 150, 200);
+    padding-inline: 1rem;
+    box-shadow: 5px 5px 0 black;
+    font-size: 1.4rem;
+    text-transform: uppercase;
+    font-weight: 800;
+}
+
+a,
+button {
+    cursor: pointer;
+}
+
+button:hover {
+    transform: translateY(2px);
+    box-shadow: 0px 0px 0 black;
+}
+
+body {
+    background-color: rgb(111, 140, 235);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 1rem;
+    padding: 1rem;
+}
+
+.main {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+}
+
+h2 {
+    font-size: 5rem;
+    line-height: 0;
+}
+
+#blog {
+    background-color: rgb(255, 186, 37);
+    font-size: 1.2rem;
+    box-shadow: 5px 5px 0 black;
+    margin: 1rem;
+    padding: 1rem;
+    display: flex;
+    width: 500px;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+
+    button {
+        color: white;
+        width: fit-content;
+    }
+}
+
+.new-blog {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: green;
+    margin: 1rem;
+    padding: 1rem;
+    width: fit-content;
+
+    form {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+
+        input {
+            padding: 0.2rem;
+        }
+    }
+}
+
+.toggle {
+    background-color: rgb(255, 186, 37);
+}
+
+.title {
+    font-weight: 800;
+}
+
+.author {
+    font-style: italic;
+}
+
+.url {
+    text-decoration: underline;
+    color: rgb(119, 0, 255);
+}
+
+.likes {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 1rem;
+    gap: 1rem;
+}
+
+.like {
+    background-color: rgb(34, 18, 66);
+    font-size: 1rem;
+    padding: 0.2rem;
+}
